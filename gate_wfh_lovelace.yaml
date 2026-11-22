@@ -67,6 +67,10 @@ cards:
         name: Концевик открытия
       - entity: binary_sensor.dvor_gate_wfh_gate_closed_limit
         name: Концевик закрытия
+      - entity: binary_sensor.dvor_gate_wfh_gate_fsw
+        name: Фотоэлементы (FSW)
+      - entity: binary_sensor.dvor_gate_wfh_gate_inrf
+        name: Вход INRF
       - entity: sensor.gate_return_state_text
         name: Состояние привода
       - entity: sensor.dvor_gate_wfh_gate_wifi_rssi

@@ -41,7 +41,9 @@
 | 107 | l_open | ro | Концевик «открыто» | `binary_sensor` |
 | 110 | fast_op | rw | Быстрое открытие | `switch` |
 | 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` |
-| 108, 109, 111 | inrf, fsw, hidden_state | ro | Служебные — в сущности не выводятся | — |
+| 108 | inrf | ro | Диагностический вход (назначение уточняется) | `binary_sensor` (diagnostic) |
+| 109 | fsw | ro | Фотоэлементы (индикатор FSW в приложении) | `binary_sensor` (diagnostic) |
+| 111 | hidden_state | ro | Служебный — в сущности не выводится | — |
 
 Производные сущности:
 - `cover.gate_wfh` — ворота целиком: open / opening / closing / closed + команды (блок `cover:` в `configuration.yaml`)
@@ -92,6 +94,8 @@
 | **button** | 104 | Gate Wicket | калитка (wfh_lock) |
 | **binary_sensor** | 106 | Gate Closed Limit | по умолчанию |
 | **binary_sensor** | 107 | Gate Open Limit | по умолчанию |
+| **binary_sensor** | 108 | Gate INRF | entity category: Diagnostic |
+| **binary_sensor** | 109 | Gate FSW | entity category: Diagnostic (фотоэлементы) |
 | **sensor** | 105 | Gate Return State | по умолчанию |
 | **sensor** | 112 | Gate WiFi RSSI | device class: Signal strength, ед.: `dBm` |
 | **switch** | 110 | Gate Fast Open | без галочек «Restore…» и «Passive…» |
@@ -181,5 +185,5 @@ mode: single
 
 ## История версий
 
-- **v1.1** (22.11.2026) — коды return_state 6=калитка, 11=остановлен; в cover они дают статус `open`.
+- **v1.1** (22.11.2026) — коды return_state 6=калитка, 11=остановлен; в cover они дают статус `open`. Диагностика: DP 108 (`inrf`) и DP 109 (`fsw`, фотоэлементы). Раздел «Оборудование» с фото платы и предупреждением LOCK = калитка.
 - **v1.0** (22.11.2026) — первая рабочая версия: форк xZetsubou, протокол 3.5, button + binary_sensor, UI-помощники, cover, карточка.

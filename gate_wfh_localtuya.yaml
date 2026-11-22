@@ -15,6 +15,8 @@
 #    button         104  Gate Wicket   (калитка, wfh_lock)
 #    binary_sensor  106  Gate Closed Limit
 #    binary_sensor  107  Gate Open Limit
+#    binary_sensor  108  Gate INRF  (diagnostic)
+#    binary_sensor  109  Gate FSW   (diagnostic, фотоэлементы)
 #    sensor         105  Gate Return State
 #    sensor         112  Gate WiFi RSSI (dBm, signal_strength)
 #    switch         110  Gate Fast Open
