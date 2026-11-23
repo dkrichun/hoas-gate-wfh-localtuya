@@ -1,0 +1,65 @@
+# ============================================================
+#  Пакет: ворота WFH (cover + автоматизация)
+#  Куда положить: /config/packages/gate_wfh.yaml
+#
+#  Одноразовая подготовка (единственная правка configuration.yaml):
+#    homeassistant:
+#      packages: !include_dir_named packages
+#  (если блок homeassistant: уже есть — добавьте в него
+#   только строку packages:, не дублируя ключ)
+#
+#  Дальше configuration.yaml больше не трогаем: вся логика
+#  ворот — в этом файле. Отключить пакет = переименовать в
+#  gate_wfh.yaml.bak и перезапустить HA.
+# ============================================================
+
+cover:
+  - platform: template
+    covers:
+      gate_wfh:
+        device_class: gate
+        friendly_name: "GATE (WFH)"
+        # Статус по коду return_state (DP 105):
+        # 2=opening, 3=open, 4=closing, 5=closed,
+        # 6=open(калитка), 11=open(остановлен); резерв — концевики.
+        value_template: >
+          {% set s = states('sensor.dvor_gate_wfh_gate_return_state') | float(-1) %}
+          {% set code = (s * 10) | round(0) | int if s < 1 else s | int %}
+          {% if code in (3, 6, 11) %}open
+          {% elif code == 5 %}closed
+          {% elif code == 2 %}opening
+          {% elif code == 4 %}closing
+          {% elif is_state('binary_sensor.dvor_gate_wfh_gate_open_limit', 'on') %}open
+          {% elif is_state('binary_sensor.dvor_gate_wfh_gate_closed_limit', 'on') %}closed
+          {% else %}unknown{% endif %}
+        open_cover:
+          - action: button.press
+            target:
+              entity_id: button.dvor_gate_wfh_gate_open
+        close_cover:
+          - action: button.press
+            target:
+              entity_id: button.dvor_gate_wfh_gate_close
+        stop_cover:
+          - action: button.press
+            target:
+              entity_id: button.dvor_gate_wfh_gate_stop
+        icon_template: >
+          {% if is_state('binary_sensor.dvor_gate_wfh_gate_open_limit', 'on') %}mdi:gate-open
+          {% elif is_state('binary_sensor.dvor_gate_wfh_gate_closed_limit', 'on') %}mdi:gate
+          {% else %}mdi:gate-alert{% endif %}
+
+# Автоматизация "ворота забыли закрыть" (по концевику)
+automation:
+  - alias: Gate left open
+    triggers:
+      - trigger: state
+        entity_id: binary_sensor.dvor_gate_wfh_gate_closed_limit
+        to: "off"
+        for: "00:10:00"
+    actions:
+      - action: notify.notify
+        data:
+          title: "Ворота"
+          message: "Ворота не закрыты уже 10 минут!"
+    mode: single
