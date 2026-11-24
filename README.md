@@ -1,7 +1,7 @@
 # Ворота WFH в Home Assistant (hoas-gate-wfh-localtuya)
 
 Локальное управление воротами с контроллером **WFH** (Tuya, Wi-Fi) в Home Assistant — без облака.
-Версия конфигурации: **v1.1** (22.11.2026)
+Версия конфигурации: **v1.2** (24.11.2026)
 
 **Стек:** Home Assistant OS + HACS + форк [xZetsubou/hass-localtuya](https://github.com/xZetsubou/hass-localtuya), протокол **Tuya 3.5**.
 
@@ -194,5 +194,6 @@ mode: single
 
 ## История версий
 
+- **v1.2** (24.11.2026) — **исправление:** ключи действий template cover приведены к официальному синтаксису `open_cover` / `close_cover` / `stop_cover` (по [документации Template Cover](https://www.home-assistant.io/integrations/template/#cover)). С прежними `open` / `close` / `stop` конфиг не загружался.
 - **v1.1** (22.11.2026) — коды return_state 6=калитка, 11=остановлен; в cover они дают статус `open`. Диагностика: DP 108 (`inrf`) и DP 109 (`fsw`, фотоэлементы). Раздел «Оборудование» с фото платы и предупреждением LOCK = калитка. Переход на packages: `gate_wfh_package.yaml` (cover + автоматизация) кладётся в `/config/packages/`, `configuration.yaml` правится один раз.
 - **v1.0** (22.11.2026) — первая рабочая версия: форк xZetsubou, протокол 3.5, button + binary_sensor, UI-помощники, cover, карточка.
