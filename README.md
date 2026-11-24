@@ -39,11 +39,11 @@
 | 105 | return_state | ro | Код состояния: 2=открывается, 3=открыто, 4=закрывается, 5=закрыто, **6=калитка, 11=остановлен** | `sensor` |
 | 106 | l_close | ro | Концевик «закрыто» | `binary_sensor` |
 | 107 | l_open | ro | Концевик «открыто» | `binary_sensor` |
-| 110 | fast_op | rw | **Турбо-открытие** (команда, не настройка!) | `button` |
-| 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` |
 | 108 | inrf | ro | Диагностический вход (назначение уточняется) | `binary_sensor` (diagnostic) |
 | 109 | fsw | ro | Фотоэлементы (индикатор FSW в приложении) | `binary_sensor` (diagnostic) |
+| 110 | fast_op | rw | **Турбо-открытие** (команда, не настройка!) | `button` |
 | 111 | hidden_state | ro | Служебный — в сущности не выводится | — |
+| 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` |
 
 Производные сущности:
 - `cover.gate_wfh` — ворота целиком: open / opening / closing / closed + команды (блок `cover:` в `configuration.yaml`)
