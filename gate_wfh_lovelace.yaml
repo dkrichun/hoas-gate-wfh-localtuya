@@ -21,59 +21,59 @@ cards:
     square: false
     cards:
       - type: button
-        entity: button.dvor_gate_wfh_gate_open
+        entity: button.gate_wfh_gate_open
         icon: mdi:gate-arrow-right
         name: Открыть
         tap_action:
           action: perform-action
           perform_action: button.press
           target:
-            entity_id: button.dvor_gate_wfh_gate_open
+            entity_id: button.gate_wfh_gate_open
       - type: button
-        entity: button.dvor_gate_wfh_gate_stop
+        entity: button.gate_wfh_gate_stop
         icon: mdi:stop-circle-outline
         name: Стоп
         tap_action:
           action: perform-action
           perform_action: button.press
           target:
-            entity_id: button.dvor_gate_wfh_gate_stop
+            entity_id: button.gate_wfh_gate_stop
       - type: button
-        entity: button.dvor_gate_wfh_gate_close
+        entity: button.gate_wfh_gate_close
         icon: mdi:gate-arrow-left
         name: Закрыть
         tap_action:
           action: perform-action
           perform_action: button.press
           target:
-            entity_id: button.dvor_gate_wfh_gate_close
+            entity_id: button.gate_wfh_gate_close
       - type: button
-        entity: button.dvor_gate_wfh_gate_wicket
+        entity: button.gate_wfh_gate_wicket
         icon: mdi:door
         name: Калитка
         tap_action:
           action: perform-action
           perform_action: button.press
           target:
-            entity_id: button.dvor_gate_wfh_gate_wicket
+            entity_id: button.gate_wfh_gate_wicket
 
   # ---- Статус и телеметрия ----
   - type: entities
     title: Состояние
     entities:
-      - entity: sensor.gate_status_text
+      - entity: sensor.gate_wfh_gate_status_text
         name: Статус ворот
-      - entity: binary_sensor.dvor_gate_wfh_gate_open_limit
+      - entity: binary_sensor.gate_wfh_gate_open_limit
         name: Концевик открытия
-      - entity: binary_sensor.dvor_gate_wfh_gate_closed_limit
+      - entity: binary_sensor.gate_wfh_gate_closed_limit
         name: Концевик закрытия
-      - entity: binary_sensor.dvor_gate_wfh_gate_fsw
+      - entity: binary_sensor.gate_wfh_gate_fsw
         name: Фотоэлементы (FSW)
-      - entity: binary_sensor.dvor_gate_wfh_gate_inrf
+      - entity: binary_sensor.gate_wfh_gate_inrf
         name: Вход INRF
-      - entity: sensor.gate_return_state_text
+      - entity: sensor.gate_wfh_gate_return_state_text
         name: Состояние привода
-      - entity: sensor.dvor_gate_wfh_gate_wifi_rssi
+      - entity: sensor.gate_wfh_gate_wifi_rssi
         name: Уровень Wi-Fi
-      - entity: switch.dvor_gate_wfh_gate_fast_open
+      - entity: switch.gate_wfh_gate_fast_open
         name: Быстрое открытие

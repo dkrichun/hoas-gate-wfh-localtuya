@@ -1,7 +1,7 @@
 # Ворота WFH в Home Assistant (hoas-gate-wfh-localtuya)
 
 Локальное управление воротами с контроллером **WFH** (Tuya, Wi-Fi) в Home Assistant — без облака.
-Версия конфигурации: **v1.2** (24.11.2026)
+Версия конфигурации: **v1.3** (24.11.2026)
 
 **Стек:** Home Assistant OS + HACS + форк [xZetsubou/hass-localtuya](https://github.com/xZetsubou/hass-localtuya), протокол **Tuya 3.5**.
 
@@ -47,10 +47,10 @@
 
 Производные сущности:
 - `cover.gate_wfh` — ворота целиком: open / opening / closing / closed + команды (блок `cover:` в `configuration.yaml`)
-- `sensor.gate_return_state_text` — расшифровка кода привода текстом (UI-помощник)
-- `sensor.gate_status_text` — «Открыты полностью / Закрыты полностью / Открыты частично» (UI-помощник; «частично» = калитка или остановка посреди хода)
+- `sensor.gate_wfh_gate_return_state_text` — расшифровка кода привода текстом (UI-помощник)
+- `sensor.gate_wfh_gate_status_text` — «Открыты полностью / Закрыты полностью / Открыты частично» (UI-помощник; «частично» = калитка или остановка посреди хода)
 
-> Имена сущностей в файлах — с префиксом `dvor_gate_wfh_` (так назвала интеграция по имени устройства/зоны). У вас префикс будет свой — замените во всех файлах или переименуйте сущности в HA.
+> Имена сущностей в файлах — с префиксом `gate_wfh_` (так назвала интеграция по имени устройства/зоны). У вас префикс будет свой — замените во всех файлах или переименуйте сущности в HA.
 
 ---
 
@@ -108,7 +108,7 @@
 
 **Gate Return State Text** — шаблон состояния:
 ```jinja
-{% set s = states('sensor.dvor_gate_wfh_gate_return_state') | float(-1) %}
+{% set s = states('sensor.gate_wfh_gate_return_state') | float(-1) %}
 {% set code = (s * 10) | round(0) | int if 0 <= s < 1 else s | int %}
 {% set map = {2: 'Открывается', 3: 'Открыто', 4: 'Закрывается', 5: 'Закрыто', 6: 'Калитка', 11: 'Остановлен'} %}
 {{ map.get(code, 'Неизвестно (' ~ s ~ ')') }}
@@ -116,8 +116,8 @@
 
 **Gate Status Text** — шаблон состояния:
 ```jinja
-{% if is_state('binary_sensor.dvor_gate_wfh_gate_open_limit', 'on') %}Открыты полностью
-{% elif is_state('binary_sensor.dvor_gate_wfh_gate_closed_limit', 'on') %}Закрыты полностью
+{% if is_state('binary_sensor.gate_wfh_gate_open_limit', 'on') %}Открыты полностью
+{% elif is_state('binary_sensor.gate_wfh_gate_closed_limit', 'on') %}Закрыты полностью
 {% else %}Открыты частично{% endif %}
 ```
 
@@ -158,7 +158,7 @@
 alias: Gate left open
 triggers:
   - trigger: state
-    entity_id: binary_sensor.dvor_gate_wfh_gate_closed_limit
+    entity_id: binary_sensor.gate_wfh_gate_closed_limit
     to: "off"
     for: "00:10:00"
 actions:
@@ -193,6 +193,8 @@ mode: single
 | `test_gate.py` | Тест связи с контроллером (перебор версий протокола) |
 
 ## История версий
+
+- **v1.3** (24.11.2026) — единая схема имён без префикса `dvor_`: все 13 сущностей `gate_wfh_*` (кнопки, концевики, диагностика, свитч, помощники). Пакет и карточка обновлены под новые ID.
 
 - **v1.2** (24.11.2026) — **исправление:** ключи действий template cover приведены к официальному синтаксису `open_cover` / `close_cover` / `stop_cover` (по [документации Template Cover](https://www.home-assistant.io/integrations/template/#cover)). С прежними `open` / `close` / `stop` конфиг не загружался.
 - **v1.1** (22.11.2026) — коды return_state 6=калитка, 11=остановлен; в cover они дают статус `open`. Диагностика: DP 108 (`inrf`) и DP 109 (`fsw`, фотоэлементы). Раздел «Оборудование» с фото платы и предупреждением LOCK = калитка. Переход на packages: `gate_wfh_package.yaml` (cover + автоматизация) кладётся в `/config/packages/`, `configuration.yaml` правится один раз.
