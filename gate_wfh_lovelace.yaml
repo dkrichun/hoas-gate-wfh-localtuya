@@ -75,5 +75,5 @@ cards:
         name: Состояние привода
       - entity: sensor.dvor_gate_wfh_gate_wifi_rssi
         name: Уровень Wi-Fi
-      - entity: switch.dvor_gate_wfh_gate_fast_open
+      - entity: switch.gate_wfh_gate_fast_open
         name: Быстрое открытие
