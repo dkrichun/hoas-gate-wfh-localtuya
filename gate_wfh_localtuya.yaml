@@ -1,47 +1,44 @@
 # ============================================================
 #  Ворота WFH (Tuya, протокол 3.5) — xZetsubou/hass-localtuya
+#  Device ID : bf0b3d6cdfb30c95eflpne
+#  IP        : 192.168.101.222
 #
-#  Подставьте свои данные при настройке устройства в UI:
-#    Host      : 192.168.x.x      (локальный IP контроллера)
-#    Device ID : YOUR_DEVICE_ID
-#    Local Key : YOUR_LOCAL_KEY   (НЕ коммитьте реальный ключ!)
-#    Protocol  : 3.5
-#    Manual DPS: 101,102,103,104,105,106,107,108,109,110,111,112
+#  Форк xZetsubou ПОДДЕРЖИВАЕТ платформу button — команды
+#  (DP 101-104) сделаны как кнопки (momentary, без состояния).
 #
-#  Справочник сущностей (платформа -> DP -> Friendly Name):
-#    button         101  Gate Open
-#    button         102  Gate Close
-#    button         103  Gate Stop
-#    button         104  Gate Wicket   (калитка, wfh_lock)
-#    binary_sensor  106  Gate Closed Limit
-#    binary_sensor  107  Gate Open Limit
-#    binary_sensor  108  Gate INRF  (diagnostic)
-#    binary_sensor  109  Gate FSW   (diagnostic, фотоэлементы)
-#    sensor         105  Gate Return State
-#    sensor         112  Gate WiFi RSSI (dBm, signal_strength)
-#    switch         110  Gate Fast Open
-#
-#  В configuration.yaml из этого файла копируется ТОЛЬКО блок cover:
-#  Текстовые сенсоры создаются через UI (Вспомогательные элементы
-#  -> Template -> Датчик шаблона), шаблоны — в README.md.
-#  Имена должны получиться:
-#    sensor.gate_return_state_text  (расшифровка кода DP 105)
-#    sensor.gate_status_text        (3 статуса по концевикам)
-#
-#  NOTE: префикс dvor_gate_wfh_ в entity_id — пример; замените
-#  на свой (см. Настройки -> Объекты) или переименуйте сущности.
+#  Этот файл — эталон. При настройке через UI устройство и
+#  сущности создаются мастером, а в /config/packages/
+#  кладётся gate_wfh_package.yaml (та же логика + автоматизация).
 # ============================================================
 
-cover:
-  - platform: template
-    covers:
-      gate_wfh:
+# ---- Эталонный список сущностей (для создания через UI) ----
+# platform: button         DP 101  Gate Open
+# platform: button         DP 102  Gate Close
+# platform: button         DP 103  Gate Stop
+# platform: button         DP 104  Gate Wicket   (калитка, wfh_lock)
+# platform: binary_sensor  DP 106  Gate Closed Limit
+# platform: binary_sensor  DP 107  Gate Open Limit
+# platform: binary_sensor  DP 108  Gate INRF  (diagnostic)
+# platform: binary_sensor  DP 109  Gate FSW   (diagnostic, фотоэлементы)
+# platform: sensor         DP 105  Gate Return State
+# platform: sensor         DP 112  Gate WiFi RSSI (dBm, signal_strength)
+# platform: switch         DP 110  Gate Fast Open
+
+# ============================================================
+#  Единая сущность cover.gate_wfh для интерфейса и автоматизаций
+#  Современный формат (template:), устаревший
+#  "cover: - platform: template" в HA 2026.11 не поддерживается.
+#  (Рабочая копия — в gate_wfh_package.yaml)
+# ============================================================
+template:
+  - cover:
+      - unique_id: gate_wfh
+        name: "GATE (WFH)"
         device_class: gate
-        friendly_name: "GATE (WFH)"
         # Статус по коду return_state (DP 105):
         # 2=opening, 3=open, 4=closing, 5=closed,
         # 6=open(калитка), 11=open(остановлен); резерв — концевики.
-        value_template: >
+        state: >
           {% set s = states('sensor.dvor_gate_wfh_gate_return_state') | float(-1) %}
           {% set code = (s * 10) | round(0) | int if s < 1 else s | int %}
           {% if code in (3, 6, 11) %}open
@@ -51,19 +48,27 @@ cover:
           {% elif is_state('binary_sensor.dvor_gate_wfh_gate_open_limit', 'on') %}open
           {% elif is_state('binary_sensor.dvor_gate_wfh_gate_closed_limit', 'on') %}closed
           {% else %}unknown{% endif %}
-        open_cover:
+        open:
           - action: button.press
             target:
               entity_id: button.dvor_gate_wfh_gate_open
-        close_cover:
+        close:
           - action: button.press
             target:
               entity_id: button.dvor_gate_wfh_gate_close
-        stop_cover:
+        stop:
           - action: button.press
             target:
               entity_id: button.dvor_gate_wfh_gate_stop
-        icon_template: >
+        icon: >
           {% if is_state('binary_sensor.dvor_gate_wfh_gate_open_limit', 'on') %}mdi:gate-open
           {% elif is_state('binary_sensor.dvor_gate_wfh_gate_closed_limit', 'on') %}mdi:gate
           {% else %}mdi:gate-alert{% endif %}
+
+# ============================================================
+#  Текстовые сенсоры создаются через UI (Вспомогательные
+#  элементы -> Шаблон -> Датчик шаблона), шаблоны — в инструкции.
+#  Имена должны получиться:
+#    sensor.gate_return_state_text  (расшифровка кода DP 105)
+#    sensor.gate_status_text        (3 статуса по концевикам)
+# ============================================================
