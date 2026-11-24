@@ -1,7 +1,7 @@
 # Ворота WFH в Home Assistant (hoas-gate-wfh-localtuya)
 
 Локальное управление воротами с контроллером **WFH** (Tuya, Wi-Fi) в Home Assistant — без облака.
-Версия конфигурации: **v1.3** (24.11.2026)
+Версия конфигурации: **v1.4** (24.11.2026)
 
 **Стек:** Home Assistant OS + HACS + форк [xZetsubou/hass-localtuya](https://github.com/xZetsubou/hass-localtuya), протокол **Tuya 3.5**.
 
@@ -39,7 +39,7 @@
 | 105 | return_state | ro | Код состояния: 2=открывается, 3=открыто, 4=закрывается, 5=закрыто, **6=калитка, 11=остановлен** | `sensor` |
 | 106 | l_close | ro | Концевик «закрыто» | `binary_sensor` |
 | 107 | l_open | ro | Концевик «открыто» | `binary_sensor` |
-| 110 | fast_op | rw | Быстрое открытие | `switch` |
+| 110 | fast_op | rw | **Турбо-открытие** (команда, не настройка!) | `button` |
 | 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` |
 | 108 | inrf | ro | Диагностический вход (назначение уточняется) | `binary_sensor` (diagnostic) |
 | 109 | fsw | ro | Фотоэлементы (индикатор FSW в приложении) | `binary_sensor` (diagnostic) |
@@ -98,7 +98,7 @@
 | **binary_sensor** | 109 | Gate FSW | entity category: Diagnostic (фотоэлементы) |
 | **sensor** | 105 | Gate Return State | по умолчанию |
 | **sensor** | 112 | Gate WiFi RSSI | device class: Signal strength, ед.: `dBm` |
-| **switch** | 110 | Gate Fast Open | без галочек «Restore…» и «Passive…» |
+| **button** | 110 | Gate Fast Open | команда «турбо-открытие», как DP 101-104 |
 
 > ⚠️ Концевики 106/107 — read-only, **только binary_sensor**. Команды 101–104 — **только button**.
 
@@ -193,6 +193,8 @@ mode: single
 | `test_gate.py` | Тест связи с контроллером (перебор версий протокола) |
 
 ## История версий
+
+- **v1.4** (24.11.2026) — DP 110 (`fast_op`) оказался командой «турбо-открытие» (проверено вживую): сущность пересоздана как `button` вместо `switch`; в карточке — пятая кнопка «Турбо», переключатель убран. Пакет не затронут.
 
 - **v1.3** (24.11.2026) — единая схема имён без префикса `dvor_`: все 13 сущностей `gate_wfh_*` (кнопки, концевики, диагностика, свитч, помощники). Пакет и карточка обновлены под новые ID.
 

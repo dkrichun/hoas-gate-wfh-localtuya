@@ -22,7 +22,7 @@
 # platform: binary_sensor  DP 109  Gate FSW   (diagnostic, фотоэлементы)
 # platform: sensor         DP 105  Gate Return State
 # platform: sensor         DP 112  Gate WiFi RSSI (dBm, signal_strength)
-# platform: switch         DP 110  Gate Fast Open
+# platform: button         DP 110  Gate Fast Open (турбо-открытие, команда!)
 
 # ============================================================
 #  Единая сущность cover.gate_wfh для интерфейса и автоматизаций

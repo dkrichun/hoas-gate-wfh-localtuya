@@ -15,9 +15,9 @@ cards:
     features:
       - type: cover-open-close
 
-  # ---- Командные кнопки (импульсные DP 101-104) ----
+  # ---- Командные кнопки (импульсные DP 101-104, 110) ----
   - type: grid
-    columns: 4
+    columns: 5
     square: false
     cards:
       - type: button
@@ -56,6 +56,15 @@ cards:
           perform_action: button.press
           target:
             entity_id: button.gate_wfh_gate_wicket
+      - type: button
+        entity: button.gate_wfh_gate_fast_open
+        icon: mdi:speedometer
+        name: Турбо
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.gate_wfh_gate_fast_open
 
   # ---- Статус и телеметрия ----
   - type: entities
@@ -75,5 +84,3 @@ cards:
         name: Состояние привода
       - entity: sensor.gate_wfh_gate_wifi_rssi
         name: Уровень Wi-Fi
-      - entity: switch.gate_wfh_gate_fast_open
-        name: Быстрое открытие
