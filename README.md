@@ -28,22 +28,24 @@
 
 ---
 
-## Карта устройства (DP)
+## Карта устройств
 
-| DP | code | Доступ | Назначение | Платформа |
-|---|---|---|---|---|
-| 101 | wfh_open | rw | Открыть (импульс) | `button` |
-| 102 | wfh_close | rw | Закрыть (импульс) | `button` |
-| 103 | wfh_stop | rw | Стоп (импульс) | `button` |
-| 104 | wfh_lock | rw | **Калитка** — частичное открытие ~1 м (не блокировка!) | `button` |
-| 105 | return_state | ro | Код состояния: 2=открывается, 3=открыто, 4=закрывается, 5=закрыто, **6=калитка, 11=остановлен** | `sensor` |
-| 106 | l_close | ro | Концевик «закрыто» | `binary_sensor` |
-| 107 | l_open | ro | Концевик «открыто» | `binary_sensor` |
-| 108 | inrf | ro | Диагностический вход (назначение уточняется) | `binary_sensor` (diagnostic) |
-| 109 | fsw | ro | Фотоэлементы (индикатор FSW в приложении) | `binary_sensor` (diagnostic) |
-| 110 | fast_op | rw | **Турбо-открытие** (команда, не настройка!) | `button` |
-| 111 | hidden_state | ro | Служебный — в сущности не выводится | — |
-| 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` |
+Единая таблица: назначение каждого DP + как его добавлять в LocalTuya (шаг 4).
+
+| DP | code | Доступ | Назначение | Платформа | Friendly Name | Доп. поля |
+|---|---|---|---|---|---|---|
+| 101 | wfh_open | rw | Открыть (импульс) | `button` | Gate Open | — |
+| 102 | wfh_close | rw | Закрыть (импульс) | `button` | Gate Close | — |
+| 103 | wfh_stop | rw | Стоп (импульс) | `button` | Gate Stop | — |
+| 104 | wfh_lock | rw | **Калитка** — частичное открытие ~1 м (не блокировка!) | `button` | Gate Wicket | — |
+| 105 | return_state | ro | Код состояния: 2=открывается, 3=открыто, 4=закрывается, 5=закрыто, **6=калитка, 11=остановлен** | `sensor` | Gate Return State | — |
+| 106 | l_close | ro | Концевик «закрыто» | `binary_sensor` | Gate Closed Limit | только binary_sensor, НЕ switch! |
+| 107 | l_open | ro | Концевик «открыто» | `binary_sensor` | Gate Open Limit | только binary_sensor, НЕ switch! |
+| 108 | inrf | ro | Диагностический вход (назначение уточняется) | `binary_sensor` | Gate INRF | entity category: Diagnostic |
+| 109 | fsw | ro | Фотоэлементы (индикатор FSW в приложении) | `binary_sensor` | Gate FSW | entity category: Diagnostic; device class: `safety` |
+| 110 | fast_op | rw | **Турбо-открытие** (команда, не настройка!) | `button` | Gate Fast Open | как DP 101-104 |
+| 111 | hidden_state | ro | Служебный — в сущности не выводится | — | — | — |
+| 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` | Gate WiFi RSSI | device class: Signal strength, ед. `dBm` |
 
 Производные сущности:
 - `cover.gate_wfh` — ворота целиком: open / opening / closing / closed + команды (блок `cover:` в `configuration.yaml`)
@@ -84,23 +86,18 @@
 
 ### Шаг 4. Сущности
 
-Добавляйте по одной (галочка «Add another entity»):
+Мастер предложит добавить сущность. Добавляйте по одной (галочка «Add another entity», после последней — снять).
 
-| Platform | DP | Friendly Name | Доп. поля |
-|---|---|---|---|
-| **button** | 101 | Gate Open | по умолчанию |
-| **button** | 102 | Gate Close | по умолчанию |
-| **button** | 103 | Gate Stop | по умолчанию |
-| **button** | 104 | Gate Wicket | калитка (wfh_lock) |
-| **binary_sensor** | 106 | Gate Closed Limit | по умолчанию |
-| **binary_sensor** | 107 | Gate Open Limit | по умолчанию |
-| **binary_sensor** | 108 | Gate INRF | entity category: Diagnostic |
-| **binary_sensor** | 109 | Gate FSW | entity category: Diagnostic (фотоэлементы) |
-| **sensor** | 105 | Gate Return State | по умолчанию |
-| **sensor** | 112 | Gate WiFi RSSI | device class: Signal strength, ед.: `dBm` |
-| **button** | 110 | Gate Fast Open | команда «турбо-открытие», как DP 101-104 |
+Каждую строку берите из таблицы **«Карта устройств»** выше, в порядке DP 101 → 112 (DP 111 пропускаем):
 
-> ⚠️ Концевики 106/107 — read-only, **только binary_sensor**. Команды 101–104 — **только button**.
+1. **Платформа** — из колонки «Платформа» (button / binary_sensor / sensor).
+2. **DP ID** — номер из первой колонки (в выпадающем списке виден code для проверки).
+3. **Friendly Name** — точно как в колонке «Friendly Name» — тогда entity_id совпадут с именами в файлах проекта.
+4. **Доп. поля** — по колонке «Доп. поля»; если «—» — оставить по умолчанию.
+
+> ⚠️ Концевики 106/107 — read-only, **только binary_sensor**, не switch!
+> Командные DP 101–104 и 110 — **только button**, не switch (кнопка = импульс без состояния; 110 — это команда «турбо», а не настройка!).
+> Поле **On Values** у всех binary_sensor не трогаем: значение по умолчанию `true,1,pir,on` уже ловит булево `True`. Его меняют только если DP возвращает не bool (строку/число) — у нас таких нет.
 
 ### Шаг 5. Текстовые сенсоры (UI-помощники)
 
