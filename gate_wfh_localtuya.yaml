@@ -48,15 +48,15 @@ template:
           {% elif is_state('binary_sensor.dvor_gate_wfh_gate_open_limit', 'on') %}open
           {% elif is_state('binary_sensor.dvor_gate_wfh_gate_closed_limit', 'on') %}closed
           {% else %}unknown{% endif %}
-        open:
+        open_cover:
           - action: button.press
             target:
               entity_id: button.dvor_gate_wfh_gate_open
-        close:
+        close_cover:
           - action: button.press
             target:
               entity_id: button.dvor_gate_wfh_gate_close
-        stop:
+        stop_cover:
           - action: button.press
             target:
               entity_id: button.dvor_gate_wfh_gate_stop
