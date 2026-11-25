@@ -134,13 +134,13 @@
 
 Результат: `cover.gate_wfh` со статусами open / opening / closing / closed (по DP 105, резерв — концевики).
 
-> Дальше `configuration.yaml` не трогаем: все изменения — только в `packages/gate_wfh.yaml`. Отключить всё разом = переименовать в `.bak` + перезапуск.
+> Дальше `configuration.yaml` не трогаем: все изменения — только в `packages/gate_wfh_package.yaml`. Отключить всё разом = переименовать в `.bak` + перезапуск.
 
 ### Шаг 7. Карточка дашборда
 
 Дашборд → ⋮ → Изменить → + Добавить карточку → **Вручную (Manual)** → вставить всё из `gate_wfh_lovelace.yaml`.
 
-> `gate_wfh_localtuya.yaml` → в `configuration.yaml`; `gate_wfh_lovelace.yaml` → в карточку. Ошибка «No card type configured» = перепутаны файлы.
+> `gate_wfh_package.yaml` → в `/config/packages/`; `gate_wfh_lovelace.yaml` → в карточку дашборда; `gate_wfh_localtuya.yaml` — справка (эталон сущностей), никуда не копируется. Ошибка «No card type configured» = перепутаны файлы.
 
 ### Шаг 8. Проверка
 
