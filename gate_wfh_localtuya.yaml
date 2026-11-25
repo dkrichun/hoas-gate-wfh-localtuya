@@ -35,18 +35,21 @@ template:
       - unique_id: gate_wfh
         name: "GATE (WFH)"
         device_class: gate
-        # Статус по коду return_state (DP 105):
+        # Статус: сначала КОНЦЕВИКИ (точные конечные положения),
+        # потом коды return_state (DP 105):
         # 2=opening, 3=open, 4=closing, 5=closed,
-        # 6=open(калитка), 11=open(остановлен); резерв — концевики.
+        # 6=open(калитка), 11=остановлен.
+        # Важно: «Стоп» у закрытых ворот даёт код 11, но концевик
+        # закрытия активен — поэтому концевики проверяем первыми.
         state: >
           {% set s = states('sensor.gate_wfh_gate_return_state') | float(-1) %}
           {% set code = (s * 10) | round(0) | int if s < 1 else s | int %}
-          {% if code in (3, 6, 11) %}open
-          {% elif code == 5 %}closed
+          {% if is_state('binary_sensor.gate_wfh_gate_closed_limit', 'on') and code not in (2, 4) %}closed
+          {% elif is_state('binary_sensor.gate_wfh_gate_open_limit', 'on') and code not in (2, 4) %}open
           {% elif code == 2 %}opening
           {% elif code == 4 %}closing
-          {% elif is_state('binary_sensor.gate_wfh_gate_open_limit', 'on') %}open
-          {% elif is_state('binary_sensor.gate_wfh_gate_closed_limit', 'on') %}closed
+          {% elif code in (3, 6, 11) %}open
+          {% elif code == 5 %}closed
           {% else %}unknown{% endif %}
         open_cover:
           - action: button.press

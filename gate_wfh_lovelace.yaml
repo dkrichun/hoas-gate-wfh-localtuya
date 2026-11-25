@@ -15,9 +15,9 @@ cards:
     features:
       - type: cover-open-close
 
-  # ---- Командные кнопки (импульсные DP 101-104, 110) ----
+  # ---- Верхний ряд: Открыть / Стоп / Закрыть (DP 101-103) ----
   - type: grid
-    columns: 5
+    columns: 3
     square: false
     cards:
       - type: button
@@ -47,15 +47,12 @@ cards:
           perform_action: button.press
           target:
             entity_id: button.gate_wfh_gate_close
-      - type: button
-        entity: button.gate_wfh_gate_wicket
-        icon: mdi:door
-        name: Калитка
-        tap_action:
-          action: perform-action
-          perform_action: button.press
-          target:
-            entity_id: button.gate_wfh_gate_wicket
+
+  # ---- Нижний ряд: Турбо / Калитка (DP 110, 104) ----
+  - type: grid
+    columns: 2
+    square: false
+    cards:
       - type: button
         entity: button.gate_wfh_gate_fast_open
         icon: mdi:speedometer
@@ -65,6 +62,15 @@ cards:
           perform_action: button.press
           target:
             entity_id: button.gate_wfh_gate_fast_open
+      - type: button
+        entity: button.gate_wfh_gate_wicket
+        icon: mdi:door
+        name: Калитка
+        tap_action:
+          action: perform-action
+          perform_action: button.press
+          target:
+            entity_id: button.gate_wfh_gate_wicket
 
   # ---- Статус и телеметрия ----
   - type: entities
