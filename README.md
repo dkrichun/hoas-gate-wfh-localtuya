@@ -1,7 +1,7 @@
 # Ворота WFH в Home Assistant (hoas-gate-wfh-localtuya)
 
 Локальное управление воротами с контроллером **WFH** (Tuya, Wi-Fi) в Home Assistant — без облака.
-Версия конфигурации: **v1.4** (24.11.2026)
+Версия конфигурации: **v1.5** (26.11.2026)
 
 **Стек:** Home Assistant OS + HACS + форк [xZetsubou/hass-localtuya](https://github.com/xZetsubou/hass-localtuya), протокол **Tuya 3.5**.
 
@@ -140,7 +140,7 @@
 
 Дашборд → ⋮ → Изменить → + Добавить карточку → **Вручную (Manual)** → вставить всё из `gate_wfh_lovelace.yaml`.
 
-> `gate_wfh_package.yaml` → в `/config/packages/`; `gate_wfh_lovelace.yaml` → в карточку дашборда; `gate_wfh_localtuya.yaml` — справка (эталон сущностей), никуда не копируется. Ошибка «No card type configured» = перепутаны файлы.
+> `gate_wfh_package.yaml` → в `/config/packages/`; `gate_wfh_lovelace.yaml` → в карточку дашборда. Ошибка «No card type configured» = перепутаны файлы.
 
 ### Шаг 8. Проверка
 
@@ -186,12 +186,13 @@ mode: single
 | Файл | Назначение |
 |---|---|
 | `gate_wfh_package.yaml` | Пакет для `/config/packages/`: cover + автоматизация |
-| `gate_wfh_localtuya.yaml` | Справочник DP и эталон сущностей (никуда не копируется) |
 | `gate_wfh_lovelace.yaml` | Карточка дашборда |
 | `gate_wfh_test.py` | Тест связи с контроллером (перебор версий протокола) |
 | `gate_wfh_dp111.py` | Эксперимент: проверка записываемости DP 111 |
 
 ## История версий
+
+- **v1.5** (26.11.2026) — упрощение структуры: `gate_wfh_localtuya.yaml` удалён, вся информация перенесена в README («Карта устройств»); скрипты переименованы в `gate_wfh_test.py` / `gate_wfh_dp111.py`; итог исследования DP 111 (всегда `True`, read-only — не используется).
 
 - **v1.4** (24.11.2026) — DP 110 (`fast_op`) оказался командой «турбо-открытие» (проверено вживую): сущность пересоздана как `button` вместо `switch`. Кнопки в карточке разбиты на два ряда: Открыть/Стоп/Закрыть и Турбо/Калитка. **Фикс статуса cover:** концевики проверяются раньше кодов return_state — «Стоп» у закрытых ворот (код 11) больше не показывает «Открыто». Пакет обновлён.
 
