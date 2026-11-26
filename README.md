@@ -42,9 +42,9 @@
 | 106 | l_close | ro | Концевик «закрыто» | `binary_sensor` | Gate Closed Limit | только binary_sensor, НЕ switch! |
 | 107 | l_open | ro | Концевик «открыто» | `binary_sensor` | Gate Open Limit | только binary_sensor, НЕ switch! |
 | 108 | inrf | ro | Диагностический вход (назначение уточняется) | `binary_sensor` | Gate INRF | entity category: Diagnostic |
-| 109 | fsw | ro | Фотоэлементы (индикатор FSW в приложении) | `binary_sensor` | Gate FSW | entity category: Diagnostic; device class: `safety` |
+| 109 | fsw | ro | Фотоэлементы (индикатор FSW; если не установлены — всегда off) | `binary_sensor` | Gate FSW | entity category: Diagnostic; device class: `safety` |
 | 110 | fast_op | rw | **Турбо-открытие** (команда, не настройка!) | `button` | Gate Fast Open | как DP 101-104 |
-| 111 | hidden_state | ro | Служебный — в сущности не выводится | — | — | — |
+| 111 | hidden_state | ro | Назначение неизвестно: всегда `True`, read-only (запись игнорируется — проверено тестом `gate_wfh_dp111.py`). Не используется | — | — | — |
 | 112 | wfh_rssi | ro | Уровень Wi-Fi, dBm | `sensor` | Gate WiFi RSSI | device class: Signal strength, ед. `dBm` |
 
 Производные сущности:
@@ -179,15 +179,17 @@ mode: single
 | Команды не работают | Проверить, что 101–104 созданы как button; журнал: Настройки → Система → Журналы → `localtuya` |
 | `Error 28841002: IoT Core subscription expired` | На локальную работу не влияет |
 | Перепривязка в Smart Life сломала всё | Сменился local key → обновить в Edit device |
-| Тест протокола | `pip install tinytuya && python3 test_gate.py <IP>` |
+| Тест протокола | `pip install tinytuya && python3 gate_wfh_test.py <IP>` |
 
 ## Файлы
 
 | Файл | Назначение |
 |---|---|
-| `gate_wfh_localtuya.yaml` | Справочник DP + блок `cover:` для configuration.yaml |
+| `gate_wfh_package.yaml` | Пакет для `/config/packages/`: cover + автоматизация |
+| `gate_wfh_localtuya.yaml` | Справочник DP и эталон сущностей (никуда не копируется) |
 | `gate_wfh_lovelace.yaml` | Карточка дашборда |
-| `test_gate.py` | Тест связи с контроллером (перебор версий протокола) |
+| `gate_wfh_test.py` | Тест связи с контроллером (перебор версий протокола) |
+| `gate_wfh_dp111.py` | Эксперимент: проверка записываемости DP 111 |
 
 ## История версий
 

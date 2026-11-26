@@ -3,14 +3,14 @@
 #
 # Запуск (из Terminal & SSH на HA или любого ПК в той же сети):
 #   pip install tinytuya
-#   python3 test_gate.py <IP> <DEVICE_ID> <LOCAL_KEY>
-# Пример: python3 test_gate.py 192.168.1.50 bf0xxxxxxxxxxxxxxxxx "abcd1234!?"
+#   python3 gate_wfh_test.py <IP> <DEVICE_ID> <LOCAL_KEY>
+# Пример: python3 gate_wfh_test.py 192.168.1.50 bf0xxxxxxxxxxxxxxxxx "abcd1234!?"
 
 import sys
 import tinytuya
 
 if len(sys.argv) < 4:
-    print("Использование: python3 test_gate.py <IP> <DEVICE_ID> <LOCAL_KEY>")
+    print("Использование: python3 gate_wfh_test.py <IP> <DEVICE_ID> <LOCAL_KEY>")
     sys.exit(1)
 
 IP, DEV_ID, LOCAL_KEY = sys.argv[1], sys.argv[2], sys.argv[3]
